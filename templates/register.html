@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper Spectral Image Classification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Your existing CSS remains unchanged */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(140deg, #000000, #1a1a2e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        /* Particle Background Animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.8), rgba(26, 26, 46, 0.9));
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: floatParticle 5s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-20px) translateX(20px);
+            }
+        }
+
+        .brand-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12.5vw;
+            color: rgba(255, 255, 255, 0.03);
+            white-space: nowrap;
+            z-index: 0;
+            font-weight: bold;
+            letter-spacing: -3px;
+            animation: floatText 10s ease-in-out infinite;
+        }
+
+        @keyframes floatText {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-20px);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+        }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+                        0 2px 4px rgba(255, 255, 255, 0.1);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            animation: floatBox 6s ease-in-out infinite;
+        }
+
+        @keyframes floatBox {
+            0%, 100% {
+                transform: translateY(0) rotateX(0) rotateY(0);
+            }
+            50% {
+                transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            }
+        }
+
+        .logo {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowLogo 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowLogo {
+            0% {
+                text-shadow: 0 0 5px rgba(0, 212, 255, 0.8);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 111, 97, 0.8);
+            }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            display: none;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+        }
+
+        .status-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #fff;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #fff;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
+            display: none;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .processing {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            z-index: 3;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Scroll Button */
+        .scroll-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+            z-index: 1000;
+        }
+
+        .scroll-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+        }
+
+        /* Small 3D Boxes at Top-Left and Top-Right */
+        .small-3d-box {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            transform-style: preserve-3d;
+            animation: rotate3dBox 10s infinite linear;
+        }
+
+        .small-3d-box .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Cyan and Coral Colors for 3D Box Faces */
+        .small-3d-box .front { transform: translateZ(50px); background: rgba(0, 212, 255, 0.1); border-color: #00d4ff; }
+        .small-3d-box .back { transform: rotateY(180deg) translateZ(50px); background: rgba(255, 111, 97, 0.1); border-color: #ff6f61; }
+        .small-3d-box .right { transform: rotateY(90deg) translateZ(50px); background: rgba(0, 212, 255, 0.1); border-color: #00d4ff; }
+        .small-3d-box .left { transform: rotateY(-90deg) translateZ(50px); background: rgba(255, 111, 97, 0.1); border-color: #ff6f61; }
+        .small-3d-box .top { transform: rotateX(90deg) translateZ(50px); background: rgba(0, 212, 255, 0.1); border-color: #00d4ff; }
+        .small-3d-box .bottom { transform: rotateX(-90deg) translateZ(50px); background: rgba(255, 111, 97, 0.1); border-color: #ff6f61; }
+
+        @keyframes rotate3dBox {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        .top-left-box {
+            top: 20px;
+            left: 20px;
+        }
+
+        .top-right-box {
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <!-- Particle Animation -->
+        <div class="particle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="particle" style="top: 30%; left: 70%; animation-delay: 1s;"></div>
+        <div class="particle" style="top: 50%; left: 40%; animation-delay: 2s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; animation-delay: 3s;"></div>
+        <div class="particle" style="top: 90%; left: 10%; animation-delay: 4s;"></div>
+    </div>
+    <div class="brand-background">HYPER SPECTRAL</div>
+
+    <!-- Small 3D Boxes at Top-Left and Top-Right -->
+    <div class="small-3d-box top-left-box">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+    </div>
+    <div class="small-3d-box top-right-box">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+    </div>
+
+    <div class="container">
+        <div class="auth-box">
+            <div class="logo">HYPER SPECTRAL</div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('register')">Register</div>
+            </div>
+
+            <div id="login-form">
+                <input type="text" id="username" placeholder="Enter username" onchange="checkUsername()">
+                <div class="video-container" id="video-container">
+                    <video id="video" autoplay playsinline></video>
+                    <div class="countdown" id="countdown"></div>
+                </div>
+                <div class="processing" id="processing">Processing...</div>
+                <button onclick="startAuth()" id="auth-button">Start</button>
+                <div class="status-message" id="status-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <!-- Scroll Button -->
+    <button class="scroll-button" onclick="scrollToBottom()">↓</button>
+
+    <script>
+        let currentStream = null;
+        let currentMode = 'login';
+        let captureTimeout = null;
+        let countdownInterval = null;
+        let isProcessing = false;
+
+        async function checkUsername() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) return;
+
+            if (currentMode === 'register') {
+                try {
+                    const response = await fetch(`/check-username/${username}`);
+                    const data = await response.json();
+
+                    if (data.exists) {
+                        showStatus('Username already exists. Please choose another.', 'error');
+                        document.getElementById('auth-button').disabled = true;
+                    } else {
+                        document.getElementById('auth-button').disabled = false;
+                        document.getElementById('status-message').style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error checking username:', error);
+                }
+            }
+        }
+
+        function switchTab(mode) {
+            if (isProcessing) return;
+
+            currentMode = mode;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab:${mode === 'login' ? 'first-child' : 'last-child'}`).classList.add('active');
+
+            stopCamera();
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('username').value = '';
+            document.getElementById('video-container').style.display = 'none';
+            document.getElementById('status-message').style.display = 'none';
+            document.getElementById('processing').style.display = 'none';
+            document.getElementById('auth-button').disabled = false;
+            document.getElementById('auth-button').style.display = 'block';
+            isProcessing = false;
+        }
+
+        async function startAuth() {
+            if (isProcessing) return;
+
+            const username = document.getElementById('username').value.trim();
+            const authButton = document.getElementById('auth-button');
+
+            if (!username) {
+                showStatus('Please enter username', 'error');
+                return;
+            }
+
+            try {
+                authButton.disabled = true;
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    }
+                });
+
+                const video = document.getElementById('video');
+                video.srcObject = currentStream;
+                document.getElementById('video-container').style.display = 'block';
+                authButton.style.display = 'none';
+
+                startCountdown();
+            } catch (error) {
+                showStatus('Camera access failed: ' + error.message, 'error');
+                authButton.disabled = false;
+            }
+        }
+
+        function startCountdown() {
+            let count = 3;
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.style.display = 'block';
+            countdownElement.textContent = count;
+
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownElement.textContent = count;
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
+                    captureAndProcess();
+                }
+            }, 1000);
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            if (captureTimeout) {
+                clearTimeout(captureTimeout);
+            }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        function captureAndProcess() {
+            if (isProcessing) return;
+
+            isProcessing = true;
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const processing = document.getElementById('processing');
+
+            processing.style.display = 'block';
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+
+            if (currentMode === 'login') {
+                processLogin(imageData);
+            } else {
+                processRegistration(imageData);
+            }
+        }
+
+        async function processLogin(imageData) {
+            const username = document.getElementById('username').value.trim();
+
+            try {
+                const response = await fetch('/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ username, image: imageData })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/dashboard';
+                    }, 1500);
+                } else {
+                    showStatus(data.message || 'Login failed. Please try again.', 'error');
+                    resetForm();
+                }
+            } catch (error) {
+                showStatus('Login failed: ' + error.message, 'error');
+                resetForm();
+            } finally {
+                stopCamera();
+                isProcessing = false;
+            }
+        }
+
+        async function processRegistration(imageData) {
+            const username = document.getElementById('username').value.trim();
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ username, image: imageData })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('Registration successful! Switching to login...', 'success');
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('username').value = username;
+                    }, 1500);
+                } else {
+                    showStatus(data.message || 'Registration failed. Please try again.', 'error');
+                    resetForm();
+                }
+            } catch (error) {
+                showStatus('Registration failed: ' + error.message, 'error');
+                resetForm();
+            } finally {
+                stopCamera();
+                isProcessing = false;
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = 'status-message ' + type;
+            statusElement.style.display = 'block';
+        }
+
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
+    </script>
+</body>
+</html>

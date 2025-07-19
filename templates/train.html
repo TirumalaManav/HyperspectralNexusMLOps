@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="TirumalaManav">
+    <meta name="timestamp" content="2025-01-23 13:31:46">
+    <title>Hyperspectral Image Classification</title>
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <style>
+        :root {
+            --primary-color: #2a2a72;
+            --secondary-color: #00d4ff;
+            --success-color: #ff6f61;
+            --error-color: #ef4444;
+            --background-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #2a2a72;
+            --text-secondary: #636e72;
+            --border-color: rgba(42, 42, 114, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        body.dark-mode {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--background-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--success-color);
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: var(--success-color);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(45deg, var(--secondary-color), var(--success-color));
+            color: white;
+            padding: 150px 0 200px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: floatText 4s infinite ease-in-out;
+        }
+
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0) rotateX(0); }
+            50% { transform: translateY(-10px) rotateX(10deg); }
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .dark-mode-toggle i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(42, 42, 114, 0.9);
+        }
+
+        body.dark-mode .dark-mode-toggle i {
+            color: #ffffff;
+        }
+
+        /* Container and Grid */
+        .container {
+            max-width: 1400px;
+            margin: -100px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .card:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            color: var(--secondary-color);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: 2px solid var(--secondary-color);
+            outline-offset: 2px;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--secondary-color);
+            background-color: var(--background-color);
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload p {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        .validation-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .validation-message.success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid var(--success-color);
+        }
+
+        .validation-message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid var(--error-color);
+        }
+
+        .parameter-slider {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-value {
+            min-width: 60px;
+            padding: 0.25rem 0.5rem;
+            background: var(--background-color);
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary-color), var(--success-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .training-progress {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .training-progress.active {
+            display: block;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 1000;
+            border-radius: 8px;
+            padding: 16px;
+            color: white;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-screen h1 {
+            font-size: 3rem;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Hyperspectral Image Classification</h1>
+            <p>Advanced Deep Learning Models for Hyperspectral Data Analysis</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="grid">
+            <!-- Dataset Selection Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-database"></i>
+                    <h2>Dataset Selection</h2>
+                </div>
+                <div class="form-group">
+                    <div class="file-upload" id="file-upload">
+                        <i class="fas fa-folder-open"></i>
+                        <p>Select Dataset Folder</p>
+                        <p>(Must contain dataset.mat and dataset_gt.mat files)</p>
+                        <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none">
+                        <div id="selected-files" class="validation-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Configuration Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-cogs"></i>
+                    <h2>Model Configuration</h2>
+                </div>
+                <div class="form-group">
+                    <label>Select Model</label>
+                    <div class="select-wrapper">
+                        <select id="model-select" disabled>
+                            <option value="">Choose a model</option>
+                            <option value="cnn">Convolutional Neural Network (CNN)</option>
+                            <option value="autoencoder">Autoencoder (AE)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Hyperparameters</h3>
+
+                    <div class="parameter-slider">
+                        <label>Patch Size</label>
+                        <div class="slider-container">
+                            <input type="range" id="patch-size" min="1" max="9" step="2" value="7">
+                            <span class="slider-value" id="patch-size-value">7</span>
+                        </div>
+                    </div>
+
+                    <div class="parameter-slider">
+                        <label>Learning Rate</label>
+                        <div class="slider-container">
+                            <input type="range" id="learning-rate" min="1" max="100" value="100">
+                            <span class="slider-value" id="learning-rate-value">0.01</span>
+                        </div>
+                    </div>
+
+                    <div class="parameter-slider">
+                        <label>Batch Size</label>
+                        <div class="slider-container">
+                            <input type="range" id="batch-size" min="2" max="256" step="16" value="4">
+                            <span class="slider-value" id="batch-size-value">4</span>
+                        </div>
+                    </div>
+
+                    <div class="parameter-slider">
+                        <label>Epochs</label>
+                        <div class="slider-container">
+                            <input type="range" id="epochs" min="10" max="200" step="10" value="10">
+                            <span class="slider-value" id="epochs-value">10</span>
+                        </div>
+                    </div>
+
+                    <div class="switch-container">
+                        <label>Flip Augmentation</label>
+                        <label class="switch">
+                            <input type="checkbox" id="flip-aug">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-container">
+                        <label>Radiation Augmentation</label>
+                        <label class="switch">
+                            <input type="checkbox" id="radiation-aug">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-container">
+                        <label>Mixture Augmentation</label>
+                        <label class="switch">
+                            <input type="checkbox" id="mixture-aug">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="start-training" class="btn btn-primary" disabled>
+                    <i class="fas fa-play"></i>
+                    Start Training
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_URL = 'http://localhost:5000/api';
+
+        // Toast notification function
+        function showToast(message, isSuccess = true) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: isSuccess ? "#10b981" : "#ef4444",
+                className: isSuccess ? "toast success" : "toast error",
+            }).showToast();
+        }
+
+        // Global state
+        let currentDataset = null;
+        let currentModel = null;
+        let isTraining = false;
+
+        // UI Elements
+        const folderInput = document.getElementById('folder-input');
+        const fileUpload = document.getElementById('file-upload');
+        const selectedFiles = document.getElementById('selected-files');
+        const modelSelect = document.getElementById('model-select');
+        const startTrainingBtn = document.getElementById('start-training');
+
+        // API Functions with improved error handling
+        async function validateDatasetAPI(datasetPath) {
+            try {
+                const response = await fetch(`${API_URL}/validate-dataset`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ datasetPath })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                console.log('Dataset validation response:', data);
+                return data;
+            } catch (error) {
+                console.error('Dataset validation error:', error);
+                return { success: false, message: `Dataset validation failed: ${error.message}` };
+            }
+        }
+
+        async function validateModelAPI(modelType) {
+            try {
+                const response = await fetch(`${API_URL}/validate-model`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ modelType })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                console.log('Model validation response:', data);
+                return data;
+            } catch (error) {
+                console.error('Model validation error:', error);
+                return { success: false, message: `Model validation failed: ${error.message}` };
+            }
+        }
+
+        async function startTrainingAPI(config) {
+            try {
+                console.log('Training config:', config);
+                const response = await fetch(`${API_URL}/train`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                console.log('Training response:', data);
+                return data;
+            } catch (error) {
+                console.error('Training error:', error);
+                return { success: false, message: `Training failed: ${error.message}` };
+            }
+        }
+
+        function resetTrainingUI() {
+            startTrainingBtn.disabled = false;
+            startTrainingBtn.innerHTML = '<i class="fas fa-play"></i> Start Training';
+            isTraining = false;
+        }
+
+        // Event Listeners
+        fileUpload.addEventListener('click', () => folderInput.click());
+
+        folderInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            // Filter .mat files
+            const matFiles = files.filter(file => file.name.toLowerCase().endsWith('.mat'));
+            const folderPath = files[0].webkitRelativePath.split('/')[0];
+
+            // Reset UI state
+            modelSelect.disabled = true;
+            startTrainingBtn.disabled = true;
+            currentDataset = null;
+
+            if (matFiles.length >= 2) {
+                const validation = await validateDatasetAPI(folderPath);
+
+                if (validation.success) {
+                    currentDataset = folderPath;
+                    selectedFiles.innerHTML = `
+                        <div class="validation-message success">
+                            <i class="fas fa-check-circle"></i> Dataset validated successfully
+                            <br>
+                            <strong>Files found:</strong> ${matFiles.length} .mat files
+                        </div>
+                    `;
+                    showToast("Dataset validated successfully");
+                    modelSelect.disabled = false;
+                } else {
+                    selectedFiles.innerHTML = `
+                        <div class="validation-message error">
+                            <i class="fas fa-exclamation-circle"></i> ${validation.message}
+                        </div>
+                    `;
+                    showToast(validation.message, false);
+                }
+            } else {
+                selectedFiles.innerHTML = `
+                    <div class="validation-message error">
+                        <i class="fas fa-exclamation-circle"></i> Please select a folder with at least 2 .mat files
+                    </div>
+                `;
+                showToast("Invalid dataset folder", false);
+            }
+        });
+
+        modelSelect.addEventListener('change', async (e) => {
+            const modelType = e.target.value;
+            if (!modelType) return;
+
+            console.log('Selected model:', modelType);
+            startTrainingBtn.disabled = true;
+            currentModel = null;
+
+            const validation = await validateModelAPI(modelType);
+
+            if (validation.success) {
+                currentModel = modelType;
+                showToast(`${modelType.toUpperCase()} model validated successfully`);
+                startTrainingBtn.disabled = false;
+            } else {
+                showToast(validation.message, false);
+            }
+        });
+
+        startTrainingBtn.addEventListener('click', async () => {
+            if (!currentDataset || !currentModel || isTraining) return;
+
+            const config = {
+                datasetPath: currentDataset,
+                modelType: currentModel,
+                hyperparameters: {
+                    patchSize: parseInt(document.getElementById('patch-size').value),
+                    learningRate: parseFloat(document.getElementById('learning-rate-value').textContent),
+                    batchSize: parseInt(document.getElementById('batch-size').value),
+                    epochs: parseInt(document.getElementById('epochs').value)
+                },
+                augmentation: {
+                    flip: document.getElementById('flip-aug').checked,
+                    radiation: document.getElementById('radiation-aug').checked,
+                    mixture: document.getElementById('mixture-aug').checked
+                }
+            };
+
+            try {
+                isTraining = true;
+                startTrainingBtn.disabled = true;
+                startTrainingBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Training...';
+
+                const response = await startTrainingAPI(config);
+                if (response.success) {
+                    showToast("Training completed successfully");
+
+                    // Check if the response contains a redirect URL
+                    if (response.redirect_url) {
+                        // Redirect to the prediction page
+                        window.location.href = response.redirect_url;
+                    }
+                } else {
+                    showToast(response.message, false);
+                }
+            } catch (error) {
+                showToast("Error during training: " + error.message, false);
+            } finally {
+                resetTrainingUI();
+            }
+        });
+
+        // Hyperparameter slider updates
+        document.getElementById('patch-size').addEventListener('input', (e) => {
+            document.getElementById('patch-size-value').textContent = e.target.value;
+        });
+
+        document.getElementById('learning-rate').addEventListener('input', (e) => {
+            const value = (parseInt(e.target.value) / 10000).toFixed(4);
+            document.getElementById('learning-rate-value').textContent = value;
+        });
+
+        document.getElementById('batch-size').addEventListener('input', (e) => {
+            document.getElementById('batch-size-value').textContent = e.target.value;
+        });
+
+        document.getElementById('epochs').addEventListener('input', (e) => {
+            document.getElementById('epochs-value').textContent = e.target.value;
+        });
+
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
+            modelSelect.disabled = true;
+            startTrainingBtn.disabled = true;
+
+            // Hide loading screen after 2 seconds (fallback in case assets fail to load)
+            setTimeout(() => {
+                const loadingScreen = document.querySelector('.loading-screen');
+                loadingScreen.classList.add('hide');
+            }, 2000);
+
+            console.log('Application initialized:', {
+                time: "2025-01-23 13:27:01",
+                user: "TirumalaManav"
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+

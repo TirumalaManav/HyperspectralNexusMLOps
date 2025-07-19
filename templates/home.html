@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperspectral Imaging Innovation Hub</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); }
+            50% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(255, 111, 97, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8), 0 0 20px rgba(255, 111, 97, 0.8);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61); /* Gradient background */
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Text Animation */
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) perspective(500px) rotateX(30deg) rotateY(0deg);
+            font-size: 15rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.1); /* Semi-transparent text */
+            text-transform: uppercase;
+            user-select: none;
+            animation: float 10s infinite ease-in-out, rotate 20s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%) perspective(500px) rotateX(30deg) rotateY(0deg) translateY(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) perspective(500px) rotateX(30deg) rotateY(0deg) translateY(-20px);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translate(-50%, -50%) perspective(500px) rotateX(30deg) rotateY(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) perspective(500px) rotateX(30deg) rotateY(360deg);
+            }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            max-width: 800px;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease-out;
+            color: white; /* Ensure text is visible */
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out 0.2s backwards;
+            color: white; /* Ensure text is visible */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .deployment-info {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: white; /* Ensure text is visible */
+        }
+
+        .system-capabilities {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: white; /* Ensure text is visible */
+        }
+
+        .key-metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+
+        .metric {
+            text-align: center;
+            color: white; /* Ensure text is visible */
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tech-stack {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: white; /* Ensure text is visible */
+        }
+
+        .certification {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            color: white; /* Ensure text is visible */
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .primary-btn, .secondary-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn {
+            background: #ff6f61;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4), 0 0 10px rgba(255, 111, 97, 0.8);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 2px solid #ff6f61;
+            color: #ff6f61;
+            box-shadow: 0 0 10px rgba(255, 111, 97, 0.8);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 111, 97, 0.6), 0 0 20px rgba(255, 111, 97, 0.8);
+        }
+
+        .secondary-btn:hover {
+            background: #ff6f61;
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 111, 97, 0.8);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #2a2a72;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            border-radius: 2px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 212, 255, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.6), 0 0 20px rgba(255, 111, 97, 0.8);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2a2a72;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .background-text {
+                font-size: 8rem;
+            }
+
+            .key-metrics {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">HyperSpec AI</div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About Us</a></li>
+                <li><a href="{{ url_for('try_it_yourself') }}">Try It Yourself</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="hero" id="home">
+        <div class="background-text">HYPERSPECTRAL</div>
+        <div class="hero-content">
+            <h2>Revolutionizing Hyperspectral Image Classification</h2>
+            <div class="deployment-info">
+                <span>v2.4.1 Stable Release</span> •
+                <span>Last Updated: 2025-01-16</span>
+            </div>
+            <p class="system-capabilities">
+                Unified MLOps Pipeline Supporting:
+                <span class="highlight">CNN, GAN, and Autoencoder Models</span> •
+                <span class="highlight">Accelerated Training Pipelines</span> •
+                <span class="highlight">Highly Accurate Predictions</span>
+            </p>
+            <div class="key-metrics">
+                <div class="metric">
+                    <span>Model Architectures</span>
+                    <strong>CNN, GAN, Autoencoder</strong>
+                </div>
+                <div class="metric">
+                    <span>Model Accuracy</span>
+                    <strong>99% Across All Architectures</strong>
+                </div>
+                <div class="metric">
+                    <span>Training Speed</span>
+                    <strong>Optimized for Faster Results</strong>
+                </div>
+            </div>
+            <div class="tech-stack">
+                Powered by:
+                <span class="tech">TensorFlow</span> •
+                <span class="tech">MLflow</span> •
+                <span class="tech">Kubernetes</span> •
+                <span class="tech">DVC</span>
+            </div>
+            <div class="certification">
+                <span>ISO 27001 Certified</span> •
+                <span>HIPAA Compliant</span> •
+                <span>SOC 2 Type II</span>
+            </div>
+            <div class="cta-buttons">
+                <button class="primary-btn">View Documentation</button>
+                <button class="secondary-btn">Download WhitePaper</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <section class="section" id="overview">
+            <h2 class="section-title">Understanding Hyperspectral Imaging</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>What is Hyperspectral Imaging?</h3>
+                    <p>Hyperspectral imaging combines spectroscopy with digital imaging to capture detailed spectral information across hundreds of continuous wavelength bands. Each pixel in a hyperspectral image contains a complete spectral signature, enabling precise material identification and analysis.</p>
+                </div>
+                <div class="card">
+                    <h3>Applications</h3>
+                    <p>From precision agriculture and environmental monitoring to medical diagnostics and defense applications, hyperspectral imaging is revolutionizing how we see and analyze our world. Its ability to detect subtle material differences makes it invaluable across numerous industries.</p>
+                </div>
+                <div class="card">
+                    <h3>Societal Impact</h3>
+                    <p>This technology helps address critical challenges in food security, environmental protection, healthcare, and national security. It enables early detection of crop diseases, monitors environmental changes, assists in medical diagnoses, and enhances surveillance capabilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="models">
+            <h2 class="section-title">Our Advanced Models</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>CNN</h3>
+                    <p>Convolutional Neural Networks excel at spatial feature extraction, making them perfect for analyzing the complex patterns in hyperspectral data. Our CNN models achieve state-of-the-art accuracy in classification tasks.</p>
+                </div>
+                <div class="card">
+                    <h3>AutoEncoder</h3>
+                    <p>Our AutoEncoder architecture efficiently compresses hyperspectral data while preserving essential features, enabling faster processing and improved classification accuracy through dimensionality reduction.</p>
+                </div>
+                <div class="card">
+                    <h3>GAN</h3>
+                    <p>Generative Adversarial Networks help overcome limited data challenges by generating synthetic training samples, enhancing model robustness and improving classification accuracy through data augmentation.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@hyperspecai.com</p>
+                <p>Location: Innovation Hub, Tech Valley</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <div class="footer-links">
+                    <a href="#about">About Us</a>
+                    <a href="#train">Try It Yourself</a>
+                    <a href="#login">Login</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Developed By</h3>
+                <div class="footer-links">
+                    <a href="https://www.linkedin.com/in/bhaskar-das-99969117/" target="_blank">Bhaskar Das</a>
+                    <a href="https://www.linkedin.com/in/lalan-kumar-983267229/" target="_blank">Lalan Kumar</a>
+                    <a href="https://www.linkedin.com/in/manav-goud" target="_blank">Manav Goud</a>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 2rem; text-align: center;">
+            <p>&copy; 2024 HyperSpec AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

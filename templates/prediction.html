@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="TirumalaManav">
+    <meta name="description" content="Hyperspectral Analysis Dashboard">
+    <meta name="last-modified" content="2025-01-24 05:18:01">
+    <title>Hyperspectral Analysis Dashboard</title>
+
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --cyan: #00d4ff; /* Cyan */
+            --coral: #ff6f61; /* Coral */
+            --white: #ffffff; /* White */
+            --light-gray: #f8f9fa; /* Light Gray */
+            --semi-transparent-white: rgba(255, 255, 255, 0.1); /* Semi-Transparent White */
+            --header-gradient: linear-gradient(135deg, var(--cyan), var(--coral)); /* Cyan to Coral gradient */
+            --hero-gradient: linear-gradient(45deg, var(--cyan), var(--coral)); /* Cyan to Coral gradient */
+            --card-background: rgba(255, 255, 255, 0.9); /* White with transparency */
+            --text-primary: #2a2a72; /* Dark Blue for text (unchanged for readability) */
+            --text-secondary: #636e72; /* Light Gray for secondary text */
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        body.dark-mode {
+            background: #1a1a2e;
+            color: var(--white);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--coral);
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: var(--coral);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--light-gray);
+            border-top: 5px solid var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--header-gradient); /* Cyan to Coral gradient */
+            color: var(--white);
+            padding: 2rem;
+            width: 250px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            animation: slideIn 0.5s forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 1rem;
+            border-radius: 8px;
+        }
+
+        .user-info,
+        .timestamp {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--white);
+            padding: 0.5rem;
+            background: var(--semi-transparent-white);
+            border-radius: 8px;
+        }
+
+        .user-info i,
+        .timestamp i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .nav-menu {
+            margin-top: 2rem;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .nav-menu a i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background-color: var(--cyan);
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: var(--transition);
+            flex-grow: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--header-gradient); /* Cyan to Coral gradient */
+            color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--hero-gradient); /* Cyan to Coral gradient */
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--coral), var(--cyan)); /* Reverse gradient on hover */
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            height: fit-content;
+            max-height: 800px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+            animation: cardFloat 3s infinite ease-in-out;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .card:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            background: var(--header-gradient); /* Cyan to Coral gradient */
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card-actions i {
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .card-actions i:hover {
+            color: var(--cyan);
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            height: calc(100% - 60px);
+            overflow: auto;
+        }
+
+        /* Training Summary */
+        .training-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .summary-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .summary-item h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-item p {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--header-gradient); /* Cyan to Coral gradient */
+            border-radius: 5px;
+        }
+
+        /* Visualization Containers */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-container h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Confusion Matrix */
+        .confusion-matrix-container {
+            width: 100%;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        .confusion-matrix-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Training Charts */
+        .training-charts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .training-charts canvas {
+            max-height: 400px !important;
+            width: 100% !important;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        /* Classification Report */
+        .report-container {
+            background-color: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .visual-report {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .visual-report table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .visual-report th,
+        .visual-report td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .visual-report th {
+            background: var(--header-gradient); /* Cyan to Coral gradient */
+            color: var(--white);
+        }
+
+        .visual-report tr:hover {
+            background-color: var(--light-gray);
+        }
+
+        /* Dataset Selection */
+        .dataset-selector {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .dataset-selector select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--text-secondary);
+            border-radius: 4px;
+            background-color: var(--white);
+            color: var(--text-primary);
+            font-size: 1rem;
+            width: 200px;
+        }
+
+        /* Messages */
+        .error-message,
+        .success-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--white);
+        }
+
+        .error-message {
+            background-color: var(--coral);
+        }
+
+        .success-message {
+            background-color: var(--cyan);
+        }
+
+        .error-message i,
+        .success-message i {
+            font-size: 1.2rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--card-background);
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--coral);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--coral);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loader"></div>
+        <p>Loading...</p>
+    </div>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Logo" class="logo">
+                <h1>HSI Analysis</h1>
+            </div>
+
+            <div class="user-info">
+                <i class="fas fa-user"></i>
+                <span>{{ data.username }}</span>
+            </div>
+
+            <div class="timestamp">
+                <i class="fas fa-clock"></i>
+                <span>{{ data.timestamp }}</span>
+            </div>
+
+            <div class="nav-menu">
+                <a href="#overview" class="active">
+                    <i class="fas fa-home"></i>
+                    Overview
+                </a>
+                <a href="#visualizations">
+                    <i class="fas fa-chart-bar"></i>
+                    Visualizations
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-title">
+                    <h1>Analysis Results: <span class="highlight">{{ data.selected_dataset }}</span></h1>
+                </div>
+                <div class="dataset-selector">
+                    <select onchange="window.location.href='/?dataset=' + this.value">
+                        {% for dataset in data.available_datasets %}
+                        <option value="{{ dataset }}" {% if dataset == data.selected_dataset %}selected{% endif %}>
+                            {{ dataset }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="results-grid">
+                <!-- Overview Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Training Summary</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="training-summary">
+                            <div class="summary-item">
+                                <h3>Model Type</h3>
+                                <p>{{ data.overview.model_type }}</p>
+                            </div>
+                            <div class="summary-item">
+                                <h3>Training Time</h3>
+                                <p>{{ data.overview.training_time }}</p>
+                            </div>
+                            <div class="summary-item">
+                                <h3>Accuracy</h3>
+                                <p>{{ data.overview.accuracy }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Comparison -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-images"></i> Prediction Comparison</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="image-container">
+                            <img src="{{ data.images.comparison }}" alt="Prediction Comparison" class="zoomable">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confusion Matrix -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-th"></i> Confusion Matrix</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="image-container">
+                            <img src="{{ data.images.confusion_matrix }}" alt="Confusion Matrix" class="zoomable">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-history"></i> Training History</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="image-container">
+                            <img src="{{ data.images.training_history }}" alt="Training History" class="zoomable">
+                        </div>
+                        <div class="report-container">
+                            <pre>{{ data.reports.training }}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classification Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-file-alt"></i> Classification Report</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="report-container visual-report">
+                            <pre>{{ data.reports.classification }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for zoomed images -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        // Image zoom functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.getElementsByClassName('close')[0];
+
+            // Get all zoomable images
+            const zoomableImages = document.getElementsByClassName('zoomable');
+
+            Array.from(zoomableImages).forEach(img => {
+                img.onclick = function() {
+                    modal.style.display = "block";
+                    modalImg.src = this.src;
+                }
+            });
+
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+
+        // Loading overlay
+        window.addEventListener('load', function() {
+            document.querySelector('.loading-overlay').style.display = 'none';
+        });
+
+        // Navigation menu
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+# Contributors to Hyperspectral Image Classification Framework
+
+## Primary Authors
+
+**Tirumala Manav** <thirumalamanav123@gmail.com>
+- Lead Developer and Researcher
+- Institution: Hyderabad Institute of Technology and Management
+- Contributions:
+  - Overall project architecture and design
+  - HICNN implementation and optimization
+  - Web framework development (Flask)
+  - Cryptographic face verification system
+  - Documentation and project management
+  - Performance optimization and testing
+
+**Lalan Kumar**
+- Co-Developer and Researcher
+- Institution: Hyderabad Institute of Technology and Management
+- Contributions:
+  - HICAE autoencoder architecture development
+  - Data preprocessing and augmentation pipelines
+  - GAN implementation and training
+  - Dataset integration and management
+  - Performance evaluation and metrics analysis
+
+**Prof. Bhaaskar Das**
+- Research Supervisor and Mentor
+- Institution: Hyderabad Institute of Technology and Management
+- Contributions:
+  - Research guidance and technical oversight
+  - Architectural design consultation
+  - Academic supervision and review
+  - Research methodology and validation
+  - Publication and dissemination support
+
+## Institutional Affiliation
+
+**Hyderabad Institute of Technology and Management (HITAM)**
+- Department: Computer Science and Engineering
+- Research Focus: Deep Learning, Computer Vision, Remote Sensing
+- Support: Infrastructure, computational resources, academic guidance
+
+## Contact Information
+
+For questions, collaborations, or technical support:
+- **Primary Contact**: Tirumala Manav (thirumalamanav123@gmail.com)
+- **Institution**: Hyderabad Institute of Technology and Management
+- **Project Repository**: https://github.com/TirumalaManav/Hyperspectral-Image-Classification-Framework
+
+## Acknowledgments
+
+We thank the open-source community for providing foundational tools and datasets
+that made this research possible, and HITAM for providing the academic environment
+and resources necessary for advanced research in hyperspectral image classification.
+
+---
+
+*This project represents collaborative research in advancing hyperspectral image
+classification through innovative deep learning architectures.*

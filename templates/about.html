@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Hyperspectral Imaging Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
+            color: #2a2a72;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        body.dark-mode {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6f61;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #ff6f61;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            color: white;
+            padding: 150px 0 200px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: floatText 4s infinite ease-in-out;
+        }
+
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0) rotateX(0); }
+            50% { transform: translateY(-10px) rotateX(10deg); }
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .dark-mode-toggle i {
+            color: #2a2a72;
+            font-size: 1.2rem;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(42, 42, 114, 0.9);
+        }
+
+        body.dark-mode .dark-mode-toggle i {
+            color: #ffffff;
+        }
+
+        /* Team Grid */
+        .container {
+            max-width: 1200px;
+            margin: -100px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .team-member:hover::before {
+            opacity: 1;
+        }
+
+        .team-member:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .member-image {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-member:hover .member-image img {
+            transform: scale(1.1) rotateY(5deg);
+        }
+
+        .member-info {
+            padding: 30px;
+        }
+
+        .member-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2a2a72;
+        }
+
+        .member-role {
+            color: #00d4ff;
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .member-bio {
+            color: #636e72;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(42, 42, 114, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a2a72;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #ff6f61;
+            color: white;
+            transform: translateY(-3px) rotateY(10deg);
+        }
+
+        .achievements {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(42, 42, 114, 0.1);
+        }
+
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(42, 42, 114, 0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #2a2a72;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .achievement-badge i {
+            margin-right: 5px;
+            color: #00d4ff;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #00d4ff, #ff6f61);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-screen h1 {
+            font-size: 3rem;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <h1>Loading...</h1>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div id="particles-js"></div>
+        <div class="hero-content">
+            <h1>Meet Our Team</h1>
+            <p>Pioneering the future of Hyperspectral Imaging through innovation and expertise</p>
+        </div>
+    </div>
+
+    <!-- Team Grid -->
+    <div class="container">
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-image">
+                    <img src="[PLACEHOLDER_FOR_BHASKAR_IMAGE]" alt="Bhaskar Das">
+                </div>
+                <div class="member-info">
+                    <h3>Mr. Bhaskar Das</h3>
+                    <div class="member-role">Associate Professor & Research Lead</div>
+                    <p class="member-bio">Currently pursuing his PhD from IIIT-Ranchi (IIIT-R), Mr. Das brings extensive expertise in Machine Learning and Hyperspectral Imaging to our team. His guidance ensures our project maintains the highest academic and practical standards.</p>
+                    <div class="achievements">
+                        <span class="achievement-badge">
+                            <i class="fas fa-graduation-cap"></i> PhD Candidate at IIIT-R
+                        </span>
+                        <span class="achievement-badge">
+                            <i class="fas fa-chalkboard-teacher"></i> Associate Professor
+                        </span>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/bhaskar-das-99969117/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-image">
+                    <img src="D:\Validating\TestingALL\static\Images\lalan.jpg" alt="Lalan Kumar">
+                </div>
+                <div class="member-info">
+                    <h3>Lalan Kumar</h3>
+                    <div class="member-role">MLOps Engineer</div>
+                    <p class="member-bio">An aspiring MLOps Engineer with expertise in Machine Learning, Deep Learning, and NLP. Specialized in AutoEncoder-based model development for Hyperspectral Image Classification.</p>
+                    <div class="achievements">
+                        <span class="achievement-badge">
+                            <i class="fas fa-trophy"></i> SIH 2022 Runner Up
+                        </span>
+                        <span class="achievement-badge">
+                            <i class="fas fa-laptop-code"></i> 3+ Years ML Experience
+                        </span>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/lalan-kumar-983267229/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/kumar8074" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-image">
+                    <img src="D:\Validating\TestingALL\static\Images\manav.jpeg" alt="Manav Goud">
+                </div>
+                <div class="member-info">
+                    <h3>Tirumala Manav</h3>
+                    <div class="member-role">MLOPS Engineer</div>
+                    <p class="member-bio">MLOps Engineer with experience deploying machine learning models, specializing in neural networks and deep learning. Proficient in TensorFlow, Docker, MLflow, and various MLOps tools to streamline model deployment, monitoring, and scalability.</p>
+                    <div class="achievements">
+                        <span class="achievement-badge">
+                            <i class="fas fa-trophy"></i> SIH 2022 Runner Up
+                        </span>
+                        <span class="achievement-badge">
+                            <i class="fas fa-laptop-code"></i> 3+ Years ML Experience
+                        </span>
+                    </div>
+                    <div class="social-links">
+                        <a href="[PLACEHOLDER_FOR_MANAV_LINKEDIN]" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/TirumalaManav" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles.js Configuration
+        particlesJS.load('particles-js', 'particles.json', function() {
+            console.log('Particles.js loaded!');
+        });
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.dark-mode-toggle i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            const loadingScreen = document.querySelector('.loading-screen');
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+            }, 2000); // Adjust the delay as needed
+        });
+    </script>
+</body>
+</html>
