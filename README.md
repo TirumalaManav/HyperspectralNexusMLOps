@@ -355,7 +355,7 @@ cd ..
 ### **Dataset Setup**
 ```bash
 # Download hyperspectral datasets from Google Drive
-# https://drive.google.com/drive/folders/1cVRjWpbnXWryTWPunhDqZqW_jJaxqS7y?usp=drive_link
+ https://drive.google.com/drive/folders/1cVRjWpbnXWryTWPunhDqZqW_jJaxqS7y?usp=drive_link
 #
 # Alternatively, datasets are publicly available on Google or you can create
 # custom datasets based on your requirements
@@ -548,7 +548,7 @@ CMD ["python", "app.py"]
 ### **Development Workflow**
 ```bash
 # Fork the repository
-git fork https://github.com/TirumalaManav/Hyperspectral-Image-Classification-Framework.git
+git fork https://github.com/TirumalaManav/HyperspectralNexusMLOps.git
 
 # Create feature branch
 git checkout -b feature/new-architecture
@@ -616,7 +616,7 @@ torch.utils.checkpoint.checkpoint(model_segment, input)
   - 📧 Email: thirumalamanav123@gmail.com
   - 🏫 Institution: Hyderabad Institute of Technology and Management
 
-- **Bhaskar Das** (Supervisor)
+- **Bhaskar Das** (Co-Developer)
   - 🏫 Institution: Hyderabad Institute of Technology and Management
 
 - **Dhananjoy Bhakta** (Co-Developer)
