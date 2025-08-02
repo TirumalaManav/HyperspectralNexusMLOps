@@ -37,6 +37,7 @@ The system incorporates secure user authentication with cryptographic face verif
 - **Batch Normalization**: Improved training stability
 - **Dropout Regularization**: Overfitting prevention
 
+
 ## 🏗️ System Architecture
 
 ```
@@ -243,6 +244,7 @@ Input: [Batch, 103, 7, 7] (Hyperspectral Patches)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+
 ## 📁 Project Structure
 
 ```
@@ -284,6 +286,18 @@ Hyperspectral-Image-Classification-Framework/
 │   ├── 📊 GAN Botswana.ipynb             # GAN training notebooks
 │   ├── 📊 GAN IndianPines.ipynb
 │   └── 📄 requirements.txt
+├── 📁 HIC-CLI/                           # Command Line Interface version
+│   ├── 📁 .ipynb_checkpoints/            # Jupyter notebook checkpoints
+│   ├── 📁 checkpoints/                   # Model checkpoints
+│   ├── 📁 Datasets/                      # CLI datasets
+│   ├── 📊 Clear GPU Memory.ipynb         # GPU memory management
+│   ├── 🐍 custom_datasets.py             # Custom dataset implementations
+│   ├── 🐍 datasets.py                    # Dataset loading utilities
+│   ├── 🐍 inference.py                   # Model inference script
+│   ├── 🐍 main.py                        # Main CLI script
+│   ├── 🐍 models.py                      # Model architectures
+│   ├── 🐍 utils.py                       # Utility functions
+│   └── 📄 requirements.txt               # CLI dependencies
 ├── 📁 static/                            # Web interface static files
 ├── 📁 templates/                         # HTML templates
 │   ├── 📄 home.html                      # Main dashboard
@@ -331,11 +345,21 @@ pip install -r requirements.txt
 cd GAN
 pip install -r requirements.txt
 cd ..
+
+# For CLI version
+cd HIC-CLI
+pip install -r requirements.txt
+cd ..
 ```
 
 ### **Dataset Setup**
 ```bash
-# Download hyperspectral datasets
+# Download hyperspectral datasets from Google Drive
+# https://drive.google.com/drive/folders/1cVRjWpbnXWryTWPunhDqZqW_jJaxqS7y?usp=drive_link
+#
+# Alternatively, datasets are publicly available on Google or you can create
+# custom datasets based on your requirements
+#
 # Place .mat files in respective dataset folders:
 # - IndianPines: Indian_pines_corrected.mat, Indian_pines_gt.mat
 # - PaviaU: PaviaU.mat, PaviaU_gt.mat
@@ -362,7 +386,52 @@ http://localhost:5000
 # - Results Visualization
 ```
 
-### **2. Training Models**
+### **2. Command Line Interface (CLI)**
+```bash
+# Navigate to CLI directory
+cd HIC-CLI
+
+# Start a Visdom server for visualization
+python -m visdom.server
+
+# Open browser and navigate to
+http://localhost:8097  # or http://localhost:9999 if using Docker
+
+# Run the main CLI script
+python main.py
+
+# The most useful arguments are:
+# --model to specify the model (e.g. 'svm', 'nn', 'HICNN', 'HICAE', 'hamida', 'lee', 'chen', 'li')
+# --dataset to specify which dataset to use (e.g. 'PaviaC', 'PaviaU', 'IndianPines', 'KSC', 'Botswana')
+# --cuda switch to run the neural nets on GPU. The tool fallbacks on CPU if not specified.
+
+# For more parameters information:
+python main.py -h
+```
+
+#### **CLI Examples:**
+```bash
+# Example 1: SVM on Indian Pines dataset
+python main.py --model SVM --dataset IndianPines --training_sample 0.3
+# This runs a grid search on SVM on the Indian Pines dataset, using 30% of the
+# samples for training and the rest for testing. Results are displayed in the visdom panel.
+
+# Example 2: Basic Neural Network on Pavia University
+python main.py --model nn --dataset PaviaU --training_sample 0.1 --cuda 0
+# This runs on GPU a basic 4-layers fully connected neural network on the Pavia
+# University dataset, using 10% of the samples for training.
+
+# Example 3: HICNN on Pavia University
+python main.py --model HICNN --dataset PaviaU --training_sample 0.5 --patch_size 7 --epoch 50 --cuda 0
+# This runs on GPU the 3D CNN from Hamida et al. on the Pavia University dataset
+# with a patch size of 7, using 50% of the samples for training and optimizing for 50 epochs.
+
+# Example 4: HICAE (Autoencoder) model
+python main.py --model HICAE --dataset IndianPines --training_sample 0.4 --cuda 0
+# This runs the Convolutional Autoencoder model for feature learning and classification.
+```
+
+### **3. Training Models**
 
 #### **CNN Architecture (HICNN)**
 ```bash
@@ -394,7 +463,7 @@ jupyter notebook "GAN Salinas.ipynb"
 # Results saved in Gan Results/ folder
 ```
 
-### **3. Model Prediction**
+### **4. Model Prediction**
 ```bash
 # Web interface prediction
 # Upload hyperspectral image → Select model → Get classification
@@ -547,12 +616,13 @@ torch.utils.checkpoint.checkpoint(model_segment, input)
   - 📧 Email: thirumalamanav123@gmail.com
   - 🏫 Institution: Hyderabad Institute of Technology and Management
 
-
-- **Lalan Kumar** (Co-Developer)
+- **Bhaskar Das** (Supervisor)
   - 🏫 Institution: Hyderabad Institute of Technology and Management
 
+- **Dhananjoy Bhakta** (Co-Developer)
+  - 🏫 Institution: Indian Institute of Information Technology, Ranchi, India
 
-- **Prof. Bhaaskar Das** (Supervisor)
+- **Lalan Kumar** (Co-Developer)
   - 🏫 Institution: Hyderabad Institute of Technology and Management
 
 ### **Technical Support**
@@ -564,8 +634,3 @@ torch.utils.checkpoint.checkpoint(model_segment, input)
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-
-
-

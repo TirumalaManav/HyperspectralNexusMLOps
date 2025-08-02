@@ -140,6 +140,7 @@ dmypy.json
 
 # LARGE DATASET DIRECTORIES ONLY
 Datasets/
+Hyperspectral-Classification-master/Datasets/
 GAN/Datasets/
 
 # SECURITY AND PRIVACY FILES (Biometric data)
